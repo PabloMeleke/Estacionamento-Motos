@@ -364,7 +364,7 @@
     </footer>
 
     <script>
-        // Definição das 10 questões exatas das imagens
+        // Definição das 10 questões exatas
         const questions = [
             {
                 question: "Qual é a porcentagem estimada de sinistros de trânsito que ocorrem devido a falhas humanas?",
@@ -499,7 +499,6 @@
             
             const q = questions[currentQuestionIndex];
             
-            // Atualizar contadores e barra de progresso
             const total = questions.length;
             const currentNumber = currentQuestionIndex + 1;
             const percentage = Math.round(((currentQuestionIndex) / total) * 100);
@@ -508,10 +507,8 @@
             document.getElementById('progress-percent').innerText = `${percentage}%`;
             document.getElementById('progress-fill').style.width = `${percentage}%`;
             
-            // Atualizar textos
             document.getElementById('question-text').innerText = q.question;
             
-            // Renderizar opções
             const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = "";
             
@@ -527,7 +524,6 @@
                 optionsContainer.appendChild(li);
             });
 
-            // Mudar texto do botão na última pergunta
             if (currentQuestionIndex === total - 1) {
                 document.getElementById('next-btn').innerText = "Finalizar Avaliação";
             } else {
@@ -539,14 +535,11 @@
             selectedOption = index;
             document.getElementById('alert-msg').innerText = "";
             
-            // Remover seleção visual das outras opções
             const items = document.querySelectorAll('.option-item');
             items.forEach(item => item.classList.remove('selected'));
             
-            // Adicionar seleção na opção clicada
             element.classList.add('selected');
             
-            // Marcar o rádio internamente
             const radio = element.querySelector('input[type="radio"]');
             if (radio) radio.checked = true;
         }
@@ -557,7 +550,6 @@
                 return;
             }
             
-            // Computar se acertou
             if (selectedOption === questions[currentQuestionIndex].correct) {
                 score++;
             }
@@ -576,13 +568,33 @@
             
             const total = questions.length;
             const finalPercentage = Math.round((score / total) * 100);
-            const passed = finalPercentage >= 80; // Regra de 80% corte (Mínimo 8 questões de 10)
+            const passed = finalPercentage >= 80; 
             
             const scoreText = `Pontuação: ${finalPercentage}% (${score} de ${total})`;
             
-            // Inserir nome do usuário nas telas finais
             document.getElementById('r-name-success').innerText = userName;
             document.getElementById('r-name-failure').innerText = userName;
+
+            // === INTEGRAÇÃO COM POWER AUTOMATE ===
+            const webhookUrl = "https://1235541f7e9eedca9a2f21452d3716.02.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/bd75257092834cfca4f0844009fe8b63/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=F4m5qrCqOq6SDqe30cIg0lYn1CPG2rULNXiBXAWK9eI";
+            
+            // Dispara a requisição em background
+            fetch(webhookUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "nome": userName,
+                    "matricula": userMatricula,
+                    "nota": finalPercentage + "%"
+                })
+            }).then(response => {
+                console.log("Dados salvos com sucesso no SharePoint!");
+            }).catch(error => {
+                console.error("Erro no envio:", error);
+            });
+            // =====================================
             
             if (passed) {
                 document.getElementById('success-score').innerText = scoreText;
