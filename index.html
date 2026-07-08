@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação de Direção Defensiva & Segurança</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #001959; 
+            color: #ffffff;
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        header p {
+            font-size: 13px;
+            color: #93c5fd;
+            margin-top: 4px;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 15px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 550px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 30px 24px;
+            transition: all 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Card de Boas-Vindas e Inputs */
+        .welcome-card {
+            text-align: center;
+        }
+
+        .welcome-card h2 {
+            font-size: 22px;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+
+        .welcome-card p {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #111827;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #001959;
+        }
+
+        /* Componentes do Quiz */
+        .progress-container {
+            margin-bottom: 24px;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            background-color: #e5e7eb;
+            height: 6px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background-color: #2563eb;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 14px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .option-item:hover {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .option-item.selected {
+            background-color: #eff6ff;
+            border-color: #2563eb;
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 12px;
+            accent-color: #2563eb;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .option-text {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .alert-message {
+            color: #dc2626;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+            min-height: 18px;
+        }
+
+        /* Telas de Resultado */
+        .result-screen {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .result-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 32px;
+        }
+
+        .result-screen.approved .result-icon {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+
+        .result-screen.failed .result-icon {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .result-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .result-screen.approved .result-title {
+            color: #166534;
+        }
+
+        .result-screen.failed .result-title {
+            color: #991b1b;
+        }
+
+        .score-badge {
+            display: inline-block;
+            background-color: #f3f4f6;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 20px;
+        }
+
+        .result-text {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Botões */
+        .btn {
+            display: inline-block;
+            width: 100%;
+            background-color: #001959; 
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #00113d; 
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 11px;
+            color: #6b7280;
+            background-color: #ffffff;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Treinamento de Direção Defensiva</h1>
+        <p>Avaliação Obrigatória de Segurança</p>
+    </header>
+
+    <main>
+        <!-- Card Inicial de Instruções e Login -->
+        <div id="welcome-card" class="container welcome-card">
+            <h2>Pronto para iniciar?</h2>
+            <p>Esta avaliação possui 10 questões baseadas nas diretrizes de trânsito e nos regulamentos internos de segurança da empresa.<br><br>É necessário obter uma pontuação igual ou superior a <b>80% (8 acertos)</b> para validação e aprovação do treinamento.</p>
+            
+            <div class="input-group">
+                <label for="userName">Nome Completo</label>
+                <input type="text" id="userName" placeholder="Ex: João da Silva">
+            </div>
+            
+            <div class="input-group">
+                <label for="userMatricula">Matrícula</label>
+                <input type="text" id="userMatricula" placeholder="Ex: 12345">
+            </div>
+
+            <div id="login-error" class="alert-message hidden">Por favor, preencha nome e matrícula para prosseguir.</div>
+
+            <button class="btn" onclick="startQuiz()">Iniciar Avaliação</button>
+        </div>
+
+        <!-- Card Principal do Quiz Dinâmico -->
+        <div id="quiz-card" class="container hidden">
+            <div class="progress-container">
+                <div class="progress-text">
+                    <span id="progress-step">Pergunta 1 de 10</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div id="question-box">
+                <h3 class="question-title" id="question-text">Carregando pergunta...</h3>
+                <ul class="options-list" id="options-container">
+                    <!-- Gerado dinamicamente via JS -->
+                </ul>
+            </div>
+
+            <div class="alert-message" id="alert-msg"></div>
+            <button class="btn" id="next-btn" onclick="submitAnswer()">Responder & Avançar</button>
+        </div>
+
+        <!-- Tela de Sucesso (Aprovado) -->
+        <div id="success-screen" class="container result-screen approved hidden">
+            <div class="result-icon">✓</div>
+            <h2 class="result-title">Aprovado!</h2>
+            <div class="score-badge" id="success-score">Pontuação: 0% (0 de 10)</div>
+            <p class="result-text">Parabéns, <strong id="r-name-success"></strong>! Você demonstrou excelente entendimento das práticas de direção defensiva e cumpriu com todos os requisitos de segurança exigidos pela corporação.</p>
+            <div style="font-size: 13px; color: #6b7280; font-weight: 500; margin-top: 10px;">Você já pode fechar esta aba.</div>
+        </div>
+
+        <!-- Tela de Falha (Reprovado) -->
+        <div id="failure-screen" class="container result-screen failed hidden">
+            <div class="result-icon">⚠</div>
+            <h2 class="result-title">Atenção: Não Aprovado</h2>
+            <div class="score-badge" id="failure-score">Pontuação: 0% (0 de 10)</div>
+            <p class="result-text"><strong id="r-name-failure"></strong>, infelizmente você não atingiu a pontuação mínima obrigatória de 80% necessária para a certificação do treinamento.</p>
+            <button class="btn" onclick="resetQuiz()">Tentar Novamente</button>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 UNIMIL. Time de EHS &mdash; Segurança em Primeiro Lugar.
+    </footer>
+
+    <script>
+        // Definição das 10 questões exatas das imagens
+        const questions = [
+            {
+                question: "Qual é a porcentagem estimada de sinistros de trânsito que ocorrem devido a falhas humanas?",
+                options: [
+                    "A. 50%",
+                    "B. 10%",
+                    "C. 90%",
+                    "D. 75%"
+                ],
+                correct: 2
+            },
+            {
+                question: "Com base no perfil das vítimas em Piracicaba, qual grupo demográfico é o mais afetado?",
+                options: [
+                    "A. Homens acima de 50 anos",
+                    "B. Homens entre 20 e 29 anos",
+                    "C. Mulheres acima de 60 anos",
+                    "D. Crianças e adolescentes abaixo de 18 anos"
+                ],
+                correct: 1
+            },
+            {
+                question: "Qual é a orientação correta ao enfrentar condições de neblina durante a condução?",
+                options: [
+                    "A. Utilizar o farol baixo e aumentar a distância do veículo à frente",
+                    "B. Seguir de perto as luzes traseiras do veículo à frente",
+                    "C. Manter a velocidade constante e ligar o pisca-alerta com o veículo em movimento",
+                    "D. Ligar o farol alto para penetrar melhor na névoa"
+                ],
+                correct: 0
+            },
+            {
+                question: "Qual é a penalidade prevista para o condutor que manuseia o celular ao dirigir?",
+                options: [
+                    "A. Infração média, multa de R$ 130,16 e 4 pontos na CNH",
+                    "B. Infração gravíssima, multa de R$ 293,47 e 7 pontos na CNH",
+                    "C. Infração grave, multa de R$ 195,23 e 5 pontos na CNH",
+                    "D. Apenas advertência verbal na primeira ocorrência"
+                ],
+                correct: 1
+            },
+            {
+                question: "Sobre a 'Regra dos 2 Segundos', qual é a sua finalidade principal na direção defensiva?",
+                options: [
+                    "A. Medir o tempo de resposta do sistema de freios ABS",
+                    "B. Determinar o tempo de descanso obrigatório a cada hora de viagem",
+                    "C. Calcular o tempo necessário para realizar uma ultrapassagem",
+                    "D. Estabelecer uma distância de seguimento segura entre veículos"
+                ],
+                correct: 3
+            },
+            {
+                question: "Por que o início da chuva é considerado o momento mais perigoso para o condutor?",
+                options: [
+                    "A. Devido à queda imediata e drástica da temperatura do motor",
+                    "B. Porque os pedestres costumam atravessar as vias sem olhar para fugir da água",
+                    "C. Pois a visibilidade é sempre menor no início do que durante uma tempestade",
+                    "D. Pois a água mistura-se ao óleo e poeira, tornando a pista extremamente escorregadia"
+                ],
+                correct: 3
+            },
+            {
+                question: "Sobre o uso do capacete por motociclistas, qual recomendação é enfatizada para garantir a proteção?",
+                options: [
+                    "A. Pode ser usado sem afivelar em trajetos curtos",
+                    "B. É permitido transportar passageiros sem capacete se for emergência",
+                    "C. A viseira pode ser substituída por óculos de sol comuns",
+                    "D. Deve estar bem preso, afivelado e com a viseira em bom estado"
+                ],
+                correct: 3
+            },
+            {
+                question: "Qual é a orientação para os primeiros colaboradores a chegarem ao estacionamento da empresa?",
+                options: [
+                    "A. Utilizar as vagas mais próximas à portaria",
+                    "B. Estacionar de ré nas vagas reservadas à diretoria",
+                    "C. Utilizar as vagas mais distantes, facilitando a circulação interna",
+                    "D. Ocupar as vagas cobertas independentemente da distância"
+                ],
+                correct: 2
+            },
+            {
+                question: "No estacionamento interno, o acesso de motocicletas é restrito a veículos que possuam qual identificação?",
+                options: [
+                    "A. Adesivo numerado colado obrigatoriamente no capacete do condutor",
+                    "B. Cartão de acesso magnético pendurado no guidão da moto",
+                    "C. Adesivo numerado fixado devidamente na bengala da motocicleta",
+                    "D. Identificação eletrônica visível na placa traseira"
+                ],
+                correct: 2
+            },
+            {
+                question: "Quais são os horários estipulados de funcionamento (abertura e fechamento) para o controle de acesso ao estacionamento no período da manhã e da tarde, respectivamente?",
+                options: [
+                    "A. Manhã: 06:00 às 08:00 / Tarde: 13:00 às 15:00",
+                    "B. Manhã: 05:00 às 07:30 / Tarde: 15:00 às 16:30",
+                    "C. Manhã: 05:30 às 07:00 / Tarde: 16:00 às 18:00",
+                    "D. Manhã: 05:00 às 07:30 / Tarde: 14:00 às 17:00"
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedOption = null;
+        let userName = "";
+        let userMatricula = "";
+
+        function startQuiz() {
+            const nameInput = document.getElementById('userName').value.trim();
+            const matriculaInput = document.getElementById('userMatricula').value.trim();
+            const errorMsg = document.getElementById('login-error');
+
+            if (!nameInput || !matriculaInput) {
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            errorMsg.classList.add('hidden');
+            userName = nameInput;
+            userMatricula = matriculaInput;
+
+            document.getElementById('welcome-card').classList.add('hidden');
+            document.getElementById('quiz-card').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            selectedOption = null;
+            document.getElementById('alert-msg').innerText = "";
+            
+            const q = questions[currentQuestionIndex];
+            
+            // Atualizar contadores e barra de progresso
+            const total = questions.length;
+            const currentNumber = currentQuestionIndex + 1;
+            const percentage = Math.round(((currentQuestionIndex) / total) * 100);
+            
+            document.getElementById('progress-step').innerText = `Pergunta ${currentNumber} de ${total}`;
+            document.getElementById('progress-percent').innerText = `${percentage}%`;
+            document.getElementById('progress-fill').style.width = `${percentage}%`;
+            
+            // Atualizar textos
+            document.getElementById('question-text').innerText = q.question;
+            
+            // Renderizar opções
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = "";
+            
+            q.options.forEach((option, index) => {
+                const li = document.createElement('li');
+                li.className = "option-item";
+                li.onclick = () => selectOption(index, li);
+                
+                li.innerHTML = `
+                    <input type="radio" name="quiz-opt" id="opt-${index}" value="${index}">
+                    <label class="option-text" for="opt-${index}">${option}</label>
+                `;
+                optionsContainer.appendChild(li);
+            });
+
+            // Mudar texto do botão na última pergunta
+            if (currentQuestionIndex === total - 1) {
+                document.getElementById('next-btn').innerText = "Finalizar Avaliação";
+            } else {
+                document.getElementById('next-btn').innerText = "Responder & Avançar";
+            }
+        }
+
+        function selectOption(index, element) {
+            selectedOption = index;
+            document.getElementById('alert-msg').innerText = "";
+            
+            // Remover seleção visual das outras opções
+            const items = document.querySelectorAll('.option-item');
+            items.forEach(item => item.classList.remove('selected'));
+            
+            // Adicionar seleção na opção clicada
+            element.classList.add('selected');
+            
+            // Marcar o rádio internamente
+            const radio = element.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+        }
+
+        function submitAnswer() {
+            if (selectedOption === null) {
+                document.getElementById('alert-msg').innerText = "Por favor, selecione uma alternativa para prosseguir.";
+                return;
+            }
+            
+            // Computar se acertou
+            if (selectedOption === questions[currentQuestionIndex].correct) {
+                score++;
+            }
+            
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-card').classList.add('hidden');
+            
+            const total = questions.length;
+            const finalPercentage = Math.round((score / total) * 100);
+            const passed = finalPercentage >= 80; // Regra de 80% corte (Mínimo 8 questões de 10)
+            
+            const scoreText = `Pontuação: ${finalPercentage}% (${score} de ${total})`;
+            
+            // Inserir nome do usuário nas telas finais
+            document.getElementById('r-name-success').innerText = userName;
+            document.getElementById('r-name-failure').innerText = userName;
+            
+            if (passed) {
+                document.getElementById('success-score').innerText = scoreText;
+                document.getElementById('success-screen').classList.remove('hidden');
+            } else {
+                document.getElementById('failure-score').innerText = scoreText;
+                document.getElementById('failure-screen').classList.remove('hidden');
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            selectedOption = null;
+            
+            document.getElementById('failure-screen').classList.add('hidden');
+            document.getElementById('success-screen').classList.add('hidden');
+            document.getElementById('quiz-card').classList.remove('hidden');
+            
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>
