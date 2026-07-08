@@ -66,7 +66,7 @@
             display: none !important;
         }
 
-        /* Card de Boas-Vindas e Inputs */
+        /* Card de Boas-Vindas, Vídeo e Inputs */
         .welcome-card {
             text-align: center;
         }
@@ -81,7 +81,22 @@
             font-size: 14px;
             color: #4b5563;
             line-height: 1.6;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
+        }
+
+        .video-container {
+            margin-bottom: 16px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+            background-color: #000;
+        }
+
+        video {
+            display: block;
+            width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
         }
 
         .input-group {
@@ -110,6 +125,22 @@
         .input-group input:focus {
             outline: none;
             border-color: #001959;
+        }
+
+        .alert-message {
+            color: #dc2626;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+            min-height: 18px;
+        }
+
+        #video-alert {
+            color: #ea580c; /* Laranja de alerta */
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
         }
 
         /* Componentes do Quiz */
@@ -191,15 +222,6 @@
             line-height: 1.4;
         }
 
-        .alert-message {
-            color: #dc2626;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            text-align: center;
-            min-height: 18px;
-        }
-
         /* Telas de Resultado */
         .result-screen {
             text-align: center;
@@ -275,8 +297,14 @@
             text-align: center;
         }
 
-        .btn:hover {
+        .btn:hover:not(:disabled) {
             background-color: #00113d; 
+        }
+
+        .btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.8;
         }
 
         footer {
@@ -299,12 +327,22 @@
     <main>
         <!-- Card Inicial de Instruções e Login -->
         <div id="welcome-card" class="container welcome-card">
-            <h2>Pronto para iniciar?</h2>
-            <p>Esta avaliação possui 10 questões baseadas nas diretrizes de trânsito e nos regulamentos internos de segurança da empresa.<br><br>É necessário obter uma pontuação igual ou superior a <b>80% (8 acertos)</b> para validação e aprovação do treinamento.</p>
+            <h2>Módulo de Treinamento</h2>
+            <p>Assista ao vídeo atentamente. A avaliação só será liberada após a conclusão do conteúdo.</p>
             
+            <div class="video-container">
+                <!-- Certifique-se de que o arquivo "Direção_Defensiva_UNIMIL.mp4" está na mesma pasta do index.html no GitHub/Render -->
+                <video id="trainingVideo" controls controlsList="nodownload noremoteplayback">
+                    <source src="Direção_Defensiva_UNIMIL.mp4" type="video/mp4">
+                    Seu navegador não suporta a exibição de vídeos.
+                </video>
+            </div>
+
+            <div id="video-alert">⚠ Assista ao vídeo até o final para liberar a avaliação.</div>
+
             <div class="input-group">
                 <label for="userName">Nome Completo</label>
-                <input type="text" id="userName" placeholder="Ex: João da Silva">
+                <input type="text" id="userName" placeholder="Ex: Pablo Souza">
             </div>
             
             <div class="input-group">
@@ -314,7 +352,7 @@
 
             <div id="login-error" class="alert-message hidden">Por favor, preencha nome e matrícula para prosseguir.</div>
 
-            <button class="btn" onclick="startQuiz()">Iniciar Avaliação</button>
+            <button id="start-btn" class="btn" onclick="startQuiz()" disabled>Iniciar Avaliação</button>
         </div>
 
         <!-- Card Principal do Quiz Dinâmico -->
@@ -364,6 +402,21 @@
     </footer>
 
     <script>
+        // === LÓGICA DE BLOQUEIO DO VÍDEO ===
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('trainingVideo');
+            const startBtn = document.getElementById('start-btn');
+            const videoAlert = document.getElementById('video-alert');
+
+            if(video) {
+                video.addEventListener('ended', () => {
+                    startBtn.disabled = false;
+                    videoAlert.style.color = '#15803d'; // Verde sucesso
+                    videoAlert.innerText = "✓ Vídeo concluído! Preencha seus dados abaixo e inicie a avaliação.";
+                });
+            }
+        });
+
         // Definição das 10 questões exatas
         const questions = [
             {
@@ -488,6 +541,10 @@
             userName = nameInput;
             userMatricula = matriculaInput;
 
+            // Pausa o vídeo caso a pessoa não tenha feito isso
+            const video = document.getElementById('trainingVideo');
+            if(video) video.pause();
+
             document.getElementById('welcome-card').classList.add('hidden');
             document.getElementById('quiz-card').classList.remove('hidden');
             loadQuestion();
@@ -578,7 +635,6 @@
             // === INTEGRAÇÃO COM POWER AUTOMATE ===
             const webhookUrl = "https://1235541f7e9eedca9a2f21452d3716.02.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/bd75257092834cfca4f0844009fe8b63/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=F4m5qrCqOq6SDqe30cIg0lYn1CPG2rULNXiBXAWK9eI";
             
-            // Dispara a requisição em background
             fetch(webhookUrl, {
                 method: "POST",
                 headers: {
