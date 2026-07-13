@@ -99,6 +99,49 @@
             border-radius: 8px;
         }
 
+        /* Novo Componente de Documentação Opcional */
+        .docs-optional-card {
+            background-color: #eff6ff; /* Azul muito claro para destaque */
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .docs-optional-card h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .docs-optional-card p {
+            font-size: 13px;
+            color: #4b5563;
+            margin-bottom: 16px;
+        }
+
+        .btn-docs {
+            display: inline-block;
+            background-color: transparent;
+            color: #001959; 
+            border: 2px solid #001959; 
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none; /* Importante para o link */
+        }
+
+        .btn-docs:hover {
+            background-color: #001959; 
+            color: #ffffff;
+        }
+
         .input-group {
             text-align: left;
             margin-bottom: 16px;
@@ -331,12 +374,21 @@
             <p>Assista ao vídeo atentamente. A avaliação só será liberada após a conclusão do conteúdo.</p>
             
             <div class="video-container">
-                <!-- Certifique-se de que o arquivo "Direção_Defensiva_UNIMIL.mp4" está na mesma pasta do index.html no GitHub/Render -->
                 <video id="trainingVideo" controls controlsList="nodownload noremoteplayback">
                     <source src="Estacionamento de Motos.mp4" type="video/mp4">
                     Seu navegador não suporta a exibição de vídeos.
                 </video>
             </div>
+
+            <!-- Início da Nova Seção de Documentação Opcional -->
+            <div class="docs-optional-card">
+                <h4>Conteúdo de Apoio (Opcional)</h4>
+                <p>Para detalhes aprofundados e documentação completa sobre as práticas de segurança, acesse nossa apresentação detalhada.</p>
+                <a href="DIREÇÃO DEFENSIVA UNIMIL.pptx" class="btn-docs" target="_blank" download>
+                    Veja a Documentação Completa (PPTX)
+                </a>
+            </div>
+            <!-- Fim da Nova Seção -->
 
             <div id="video-alert">⚠ Assista ao vídeo até o final para liberar a avaliação.</div>
 
@@ -510,7 +562,7 @@
                 correct: 2
             },
             {
-                question: "Quais são os horários estipulados de funcionamento (abertura e fechamento) para o controle de acesso ao estacionamento no período da manhã e da tarde, respectivamente?",
+                question: "Quais são os horários estipulados de funcionamento (abertura e fechamento) de segunda a quinta para o controle de acesso ao estacionamento no período da manhã e da tarde, respectivamente?",
                 options: [
                     "A. Manhã: 06:00 às 08:00 / Tarde: 13:00 às 15:00",
                     "B. Manhã: 05:00 às 07:30 / Tarde: 15:00 às 16:30",
